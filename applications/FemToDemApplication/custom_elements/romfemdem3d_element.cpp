@@ -206,8 +206,8 @@ namespace Kratos
         if (this->GetProperties()[STEEL_VOLUMETRIC_PART] > 0.0)
         {
 			Vector ElasticStrainVector = StrainVector - this->GetPlasticDeformation();
-            //StressVectorSteel = prod(ConstitutiveMatrixSteel, ElasticStrainVector);
-			StressVectorSteel = prod(ConstitutiveMatrixSteel, StrainVector);
+            StressVectorSteel = prod(ConstitutiveMatrixSteel, ElasticStrainVector);
+			//StressVectorSteel = prod(ConstitutiveMatrixSteel, StrainVector);
         }
         else StressVectorSteel = ZeroVector(voigt_size);
         
@@ -482,34 +482,20 @@ namespace Kratos
 
 		double F = Yield - Kp;
 
-
-		//KRATOS_WATCH(PredictiveStress)
-		//KRATOS_WATCH(F)
-		//double toler = 1.0e-8 * Kp;
-		//KRATOS_WATCH(toler)
-		std::cout << "***" << std::endl;
-
-		if (F < abs(1.0e-15 * Kp))  // Elastic
+		if (F <= abs(1.0e-15 * Kp))  // Elastic
 		{
-			KRATOS_WATCH(Yield)
-			//this->SetValue(EQUIVALENT_STRESS_VM, Yield);
-			KRATOS_WATCH(Kp)
-			KRATOS_WATCH(Capap)
-			KRATOS_WATCH(PlasticStrain)
-			KRATOS_WATCH(PredictiveStress)
-
-
 			rIntegratedStress = PredictiveStress;
 			this->SetNonConvergedKp(Kp);
 			this->SetNonConvergedCapap(Capap);
 			this->SetNonConvergedPlasticDeformation(PlasticStrain);
+
 			this->SetValue(EQUIVALENT_STRESS_VM, Yield);
 		}
 		else  // Plastic case
 		{
 			rIntegratedStress = PredictiveStress;
 			double DLambda = 0.0;
-			Vector DEEP = ZeroVector(6), DS = ZeroVector(6), DESIG = ZeroVector(6);
+			Vector DS = ZeroVector(6), DESIG = ZeroVector(6);
 
 			while (Conv == false && iter <= iter_max)
 			{
@@ -517,8 +503,7 @@ namespace Kratos
 				if(DLambda < 0.0) DLambda = 0.0;
 				
 				PlasticStrainIncr = DLambda * FluxVector;
-				DEEP += PlasticStrainIncr;
-				PlasticStrain += DEEP;
+				PlasticStrain += PlasticStrainIncr;
 				DS = prod(C, PlasticStrainIncr);
 				DESIG -= DS;
 				rIntegratedStress -= DS;
@@ -530,14 +515,9 @@ namespace Kratos
 
 				if (F < abs(1.0e-15 * Kp))  // Has converged
 				{
-					KRATOS_WATCH(Yield)
-					//this->SetValue(EQUIVALENT_STRESS_VM, Yield);
-					KRATOS_WATCH(Kp)
-					KRATOS_WATCH(Capap)
-					KRATOS_WATCH(rIntegratedStress)
-					KRATOS_WATCH(PlasticStrain)
-
 					Conv = true;
+					
+					// Update Int Vars
 					this->SetNonConvergedKp(Kp);
 					this->SetNonConvergedCapap(Capap);
 					this->SetNonConvergedPlasticDeformation(PlasticStrain);
@@ -545,7 +525,7 @@ namespace Kratos
 				}
 				else iter++;
 
-				if (iter == iter_max) KRATOS_ERROR << "Reached Max iterations inside plasticity" << std::endl;
+				if (iter == iter_max) KRATOS_ERROR << "Reached Max iterations inside Plasticity Loop" << std::endl;
 			}
 		}
 	}
@@ -718,9 +698,6 @@ namespace Kratos
 
 		Dvect = prod(FluxVector, ElasticConstMatrix);
 
-		//KRATOS_WATCH(Dvect)
-		//KRATOS_WATCH(FluxVector)
-
 		for (int i = 0; i < 6; i++)
 		{
 			A1 += Dvect[i] * FluxVector[i];
@@ -756,9 +733,23 @@ namespace Kratos
 		
 		if (damage_element >= 0.98)
 		{
-			this->Set(ACTIVE, false);
-			double old_threshold = this->GetValue(STRESS_THRESHOLD);
-			this->SetValue(INITIAL_THRESHOLD, old_threshold);
+			if (this->GetProperties()[STEEL_VOLUMETRIC_PART] > 0.0)
+			{
+				if(this->GetCapap() > 0.98)
+				{
+					this->Set(ACTIVE, false);
+					double old_threshold = this->GetValue(STRESS_THRESHOLD);
+					this->SetValue(INITIAL_THRESHOLD, old_threshold);
+				}
+
+			}
+			else
+			{
+				this->Set(ACTIVE, false);
+				double old_threshold = this->GetValue(STRESS_THRESHOLD);
+				this->SetValue(INITIAL_THRESHOLD, old_threshold);
+			}
+
 		}
 
 		this->ResetNonConvergedVars();
@@ -833,8 +824,17 @@ namespace Kratos
 		if (rVariable == PLASTIC_DISSIPATION_CAPAP)
 		{
 			rOutput.resize(1);
-			for (unsigned int PointNumber = 0; PointNumber < 1; PointNumber++) {
-				rOutput[PointNumber] = double(this->GetCapap());
+			if (this->GetProperties()[STEEL_VOLUMETRIC_PART] > 0.0)
+			{
+				for (unsigned int PointNumber = 0; PointNumber < 1; PointNumber++)
+				{
+					rOutput[PointNumber] = double(this->GetCapap());
+				}
+			}
+			else
+			{
+				double dummy = 0.0;
+				rOutput[0] = dummy;
 			}
 		}
 	}

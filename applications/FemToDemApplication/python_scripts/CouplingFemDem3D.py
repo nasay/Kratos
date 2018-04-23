@@ -114,11 +114,13 @@ class FEMDEM3D_Solution(CouplingFemDem.FEMDEM_Solution):
 		self.PrintPlotsFiles()
 
 		# Provisional Eliminar TODO
-		PlotFile = open("ProvisionalTensionDEFacero.txt","a")
+		'''PlotFile = open("ProvisionalTensionDEFacero.txt","a")
+		time = self.FEM_Solution.time
 		Szz = self.FEM_Solution.main_model_part.GetElement(1).GetValue(KratosFemDem.EQUIVALENT_STRESS_VM)
 		Ezz = self.FEM_Solution.main_model_part.GetElement(1).GetValue(KratosFemDem.STRAIN_VECTOR)[2]
 
-		PlotFile.write("    " + "{0:.4e}".format(Ezz).rjust(11) + "    " + "{0:.4e}".format(Szz).rjust(11) + "\n")
+		PlotFile.write("{0:.4e}".format(time).rjust(11) +"    " + "{0:.4e}".format(Ezz).rjust(11) + "    " + "{0:.4e}".format(Szz).rjust(11) + "\n")
+		'''
 
 #============================================================================================================================
 	def GenerateDEM(self): # 3D version
