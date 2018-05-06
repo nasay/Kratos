@@ -181,7 +181,7 @@ class KRATOS_API(SOLID_MECHANICS_APPLICATION) YieldCriterion
         }
 
         HardeningLaw& GetHardeningLaw()
-        {      
+        {     
 	  return *mpHardeningLaw;
         }
 
