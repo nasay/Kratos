@@ -682,8 +682,11 @@ namespace Kratos
 		}
 	}
 
-	void AleCornVelElement::GetValueOnIntegrationPoints(const Variable<double>& rVariable, std::vector<double>& rValues,
-		const ProcessInfo& rCurrentProcessInfo)
+	void AleCornVelElement::GetValueOnIntegrationPoints(
+		const Variable<double>& rVariable, 
+		std::vector<double>& rValues,
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		if (rVariable == DAMAGE_ELEMENT || rVariable == IS_DAMAGED || rVariable == STRESS_THRESHOLD)
 		{
@@ -693,9 +696,11 @@ namespace Kratos
 		
 	}
 
-	void AleCornVelElement::GetValueOnIntegrationPoints(const Variable<Vector>& rVariable,
+	void AleCornVelElement::GetValueOnIntegrationPoints(
+		const Variable<Vector>& rVariable,
 		std::vector<Vector>& rValues,
-		const ProcessInfo& rCurrentProcessInfo)
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 
 		if (rVariable == STRAIN_VECTOR)
@@ -753,7 +758,10 @@ namespace Kratos
 	}
 
 	// DOUBLE VARIABLES
-	void AleCornVelElement::CalculateOnIntegrationPoints(const Variable<double>& rVariable, std::vector<double>& rOutput, const ProcessInfo& rCurrentProcessInfo)
+	void AleCornVelElement::CalculateOnIntegrationPoints(
+		const Variable<double>& rVariable, 
+		std::vector<double>& rOutput, 
+		const ProcessInfo& rCurrentProcessInfo)
 	{
 		if (rVariable == DAMAGE_ELEMENT)
 		{
@@ -782,7 +790,11 @@ namespace Kratos
 	}
 
 	// VECTOR VARIABLES
-	void AleCornVelElement::CalculateOnIntegrationPoints(const Variable<Vector>& rVariable, std::vector<Vector>& rOutput, const ProcessInfo& rCurrentProcessInfo)
+	void AleCornVelElement::CalculateOnIntegrationPoints(
+		const Variable<Vector>& rVariable, 
+		std::vector<Vector>& rOutput, 
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 
 		KRATOS_TRY
@@ -807,45 +819,6 @@ namespace Kratos
 
 		if (rOutput.size() != integration_points_number)
 			rOutput.resize(integration_points_number);
-
-		// if (rVariable == CAUCHY_STRESS_VECTOR || rVariable == PK2_STRESS_VECTOR)
-		// {
-		// 	//create and initialize element variables:
-		// 	ElementVariables Variables;
-		// 	this->InitializeElementVariables(Variables, rCurrentProcessInfo);
-
-		// 	//create constitutive law parameters:
-		// 	ConstitutiveLaw::Parameters Values(GetGeometry(), GetProperties(), rCurrentProcessInfo);
-
-		// 	//set constitutive law flags:
-		// 	Flags &ConstitutiveLawOptions = Values.GetOptions();
-
-		// 	ConstitutiveLawOptions.Set(ConstitutiveLaw::COMPUTE_STRESS);
-
-
-		// 	//reading integration points
-		// 	for (unsigned int PointNumber = 0; PointNumber < mConstitutiveLawVector.size(); PointNumber++)
-		// 	{
-		// 		//compute element kinematics B, F, DN_DX ...
-		// 		this->CalculateKinematics(Variables, PointNumber);
-
-		// 		//set general variables to constitutivelaw parameters
-		// 		this->SetGeneralVariables(Variables, Values, PointNumber);
-
-		// 		//call the constitutive law to update material variables
-		// 		if (rVariable == CAUCHY_STRESS_VECTOR)
-		// 			mConstitutiveLawVector[PointNumber]->CalculateMaterialResponseCauchy(Values);
-		// 		else
-		// 			mConstitutiveLawVector[PointNumber]->CalculateMaterialResponsePK2(Values);
-
-		// 		if (rOutput[PointNumber].size() != Variables.StressVector.size())
-		// 			rOutput[PointNumber].resize(Variables.StressVector.size(), false);
-
-		// 		rOutput[PointNumber] = Variables.StressVector;
-
-		// 	}
-
-		// }
 		else if (rVariable == GREEN_LAGRANGE_STRAIN_VECTOR || rVariable == ALMANSI_STRAIN_VECTOR)
 		{
 			//create and initialize element variables:
@@ -898,40 +871,19 @@ namespace Kratos
 					Xcoord[aux] = NodesElem1[cont].X0();
 					Ycoord[aux] = NodesElem1[cont].Y0();
 					aux++;                              // aux > 3 if the two elements are the same one (in fact aux == 9)
-
-
-					//if (this->Id() == 10792)
-					//{	
-					//	KRATOS_WATCH(NodesElem1[cont].Id())
-					//	KRATOS_WATCH(NodesElem1[cont].X0())
-					//	KRATOS_WATCH(NodesElem1[cont].Y0())
-		
-					//} 
 				}
 			}
 		} // End finding nodes
 
-		//if (aux < 2) { std::cout << " Something wrong with the elements " << std::endl; }        // Must have at least 2 shared nodes
-		//double length = 0;
-
 		// Computation of the l_char
 		if (aux < 3) 
 		{                                                                                        // It is not an edge element --> The 2 elements are not equal
-			l_char = pow((pow(Xcoord[0] - Xcoord[1], 2) + pow(Ycoord[0] - Ycoord[1], 2)), 0.5);  // Length of the edge between 2 elements
-			//l_char = length;                                                                   // Currently the characteristic length is the edge length (can be modified)
+			l_char = pow((pow(Xcoord[0] - Xcoord[1], 2) + pow(Ycoord[0] - Ycoord[1], 2)), 0.5);  // Length of the edge between 2 elements                                                                  // Currently the characteristic length is the edge length (can be modified)
 		}
 		else  // Edge Element
 		{ 
 			double ElementArea = abs(this->GetGeometry().Area());
 			l_char = sqrt(4 * ElementArea / sqrt(3));   // Cervera's Formula
-
-			// if (this->Id() == 10792)
-			// {
-			// 	KRATOS_WATCH(ElementArea)
-			// 	KRATOS_WATCH(l_char)
-
-			// } 
-			
 		} // l_char computed
 
 		CurrentElement->Set_l_char(l_char, cont);  // Storages the l_char of this side
@@ -1173,7 +1125,12 @@ namespace Kratos
 
 
 	// ****** Tangent Constitutive Tensor by Numerical Derivation ******
-	void AleCornVelElement::PerturbateStrainComponent(const Vector& rStrainVector, Vector& PertubatedStrain, const double& perturbation, int component)
+	void AleCornVelElement::PerturbateStrainComponent(
+		const Vector& rStrainVector, 
+		Vector& PertubatedStrain, 
+		const double perturbation, 
+		int component
+	)
 	{
 		PertubatedStrain = rStrainVector;
 		PertubatedStrain[component] += perturbation;
@@ -1189,8 +1146,13 @@ namespace Kratos
 		return Pert;
 	}
 
-	void  AleCornVelElement::CalculateTangentTensor(Matrix& rTangentTensor, const Vector& StrainVector, 
-		const Vector& IntegratedStressVector, int cont, double l_char)
+	void  AleCornVelElement::CalculateTangentTensor(
+		Matrix& rTangentTensor, 
+		const Vector& StrainVector, 
+		const Vector& IntegratedStressVector, 
+		int cont, 
+		double l_char
+	)
 	{
 		rTangentTensor.resize(3, 3);
 
@@ -1250,7 +1212,13 @@ namespace Kratos
 		}
 	}
 
-	void AleCornVelElement::TangentModifiedMohrCoulombCriterion(Vector& rIntegratedStress, double& damage, const Vector& StressVector, int cont, double l_char)
+	void AleCornVelElement::TangentModifiedMohrCoulombCriterion(
+		Vector& rIntegratedStress, 
+		double& damage, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	)
 	{
 		rIntegratedStress.resize(3);
 		Vector PrincipalStressVector = ZeroVector(2);
@@ -1284,8 +1252,6 @@ namespace Kratos
 		K3 = 0.5*(1 + alpha_r)*sin(friction_angle) - 0.5*(1 - alpha_r);
 
 		double n = sigma_c / sigma_t;
-		//double ElementArea = this->GetGeometry().Area();
-		//double l_char = sqrt(4 * ElementArea / sqrt(3));
 
 		double A = 1.00 / (n*n*Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
@@ -1307,7 +1273,6 @@ namespace Kratos
 		}   // 1st iteration sets threshold as c_max
 
 		c_threshold = this->Get_threshold(cont);
-		//this->Set_NonConvergedf_sigma(f, cont);
 
 		F = f - c_threshold;
 
@@ -1327,8 +1292,14 @@ namespace Kratos
 
 
 	// ******* DAMAGE MECHANICS YIELD SURFACES AND EXPONENTIAL SOFTENING ********
-	void AleCornVelElement::IntegrateStressDamageMechanics(Vector& rIntegratedStress, double& damage,
-		const Vector StrainVector, const Vector StressVector, int cont, double l_char)
+	void AleCornVelElement::IntegrateStressDamageMechanics(
+		Vector& rIntegratedStress, 
+		double& damage,
+		const Vector StrainVector, 
+		const Vector StressVector, 
+		int cont, 
+		double l_char
+	)
 	{
 		std::string yield_surface = this->GetProperties()[YIELD_SURFACE];
 
@@ -1375,7 +1346,6 @@ namespace Kratos
 
 		double n = sigma_c / sigma_t;
 		double ElementArea = this->GetGeometry().Area();
-		//double l_char = sqrt(4 * ElementArea / sqrt(3));
 
 		double A = 1.00 / (n*n*Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
@@ -1392,7 +1362,6 @@ namespace Kratos
 
 		if (this->Get_threshold(cont) == 0) { this->Set_threshold(c_max, cont); }   // 1st iteration sets threshold as c_max
 		c_threshold = this->Get_threshold(cont);
-		//KRATOS_WATCH(c_threshold)
 		this->Set_NonConvergedf_sigma(f, cont);
 	
 		F = f - c_threshold;
@@ -1403,7 +1372,7 @@ namespace Kratos
 		}
 		else
 		{
-			damage = 1 - (c_max / f)*exp(A*(1 - f / c_max));            // Exponential softening law
+			damage = 1 - (c_max / f)*exp(A*(1 - f / c_max));  // Exponential softening law
 			if (damage > 0.99) { damage = 0.99; }
 		}
 
@@ -1411,12 +1380,20 @@ namespace Kratos
 		rIntegratedStress *= (1 - damage);
 	}
 
-	void AleCornVelElement::RankineCriterion(Vector& rIntegratedStress, double& damage, const Vector& StressVector, int cont, double l_char) 
+	void AleCornVelElement::RankineCriterion(
+		Vector& rIntegratedStress, 
+		double& damage, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	) 
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStress(PrincipalStressVector, StressVector);
 
-		double sigma_c = 0.0, sigma_t = 0.0, friction_angle = 0.0, E = 0.0, Gt = 0.0, c_max = 0.0, c_threshold = 0.0;
+		double sigma_c = 0.0, sigma_t = 0.0, friction_angle = 0.0, E = 0.0,
+		Gt = 0.0, c_max = 0.0, c_threshold = 0.0;
+
 		sigma_c = this->GetProperties()[YIELD_STRESS_C];
 		sigma_t = this->GetProperties()[YIELD_STRESS_T];
 		friction_angle = this->GetProperties()[INTERNAL_FRICTION_ANGLE] * 3.14159 / 180; // In radians!
@@ -1453,7 +1430,13 @@ namespace Kratos
 		rIntegratedStress *= (1 - damage);
 	}
 
-	void AleCornVelElement::DruckerPragerCriterion(Vector& rIntegratedStress, double& damage, const Vector& StressVector, int cont, double l_char)
+	void AleCornVelElement::DruckerPragerCriterion(
+		Vector& rIntegratedStress, 
+		double& damage, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	)
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStress(PrincipalStressVector, StressVector);
@@ -1479,7 +1462,6 @@ namespace Kratos
 		J2 = Calculate_J2_Invariant(PrincipalStressVector[0], PrincipalStressVector[1]);
 
 		double ElementArea = this->GetGeometry().Area();
-		//double l_char = sqrt(4 * ElementArea / sqrt(3));
 		double A = 1.00 / (Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
@@ -1504,19 +1486,24 @@ namespace Kratos
 		if (F <= 0)  // Elastic region --> Damage is constant 
 		{
 			damage = this->Get_Convergeddamage();
-			//this->Set_NonConvergeddamage(damage);
 		}
 		else
 		{
-			damage = 1 - (c_max / f)*exp(A*(1 - f / c_max));            // Exponential softening law
+			damage = 1 - (c_max / f)*exp(A*(1 - f / c_max));   // Exponential softening law
 			if (damage > 0.99) { damage = 0.99; }
-			//this->Set_NonConvergeddamage(damage);
 		}
 		rIntegratedStress = StressVector;
 		rIntegratedStress *= (1 - damage);
 	}
 
-	void AleCornVelElement::SimoJuCriterion(Vector& rIntegratedStress, double& damage,  const Vector& StrainVector,  const Vector& StressVector, int cont, double l_char)
+	void AleCornVelElement::SimoJuCriterion(
+		Vector& rIntegratedStress, 
+		double& damage,  
+		const Vector& StrainVector,  
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	)
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStress(PrincipalStressVector, StressVector);
@@ -1543,7 +1530,7 @@ namespace Kratos
 
 		double f = 0, F = 0; /// F = f-c = 0 classical definition of yield surface
 
-							 // Check SimoJu criterion
+		// Check SimoJu criterion
 		if (StrainVector[0] == 0 && StrainVector[1] == 0) { f = 0; }
 		else
 		{
@@ -1562,26 +1549,29 @@ namespace Kratos
 		F = f - c_threshold;
 
 		double ElementArea = this->GetGeometry().Area();
-		//double l_char = sqrt(4 * ElementArea / sqrt(3));
 		double A = 1.00 / (Gt*n*n*E / (l_char *pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
 		if (F <= 0)  // Elastic region --> Damage is constant 
 		{
 			damage = this->Get_Convergeddamage();
-			//this->Set_NonConvergeddamage(damage);
 		}
 		else
 		{
-			damage = 1 - (c_max / f)*exp(A*(1 - f / c_max));            // Exponential softening law
+			damage = 1 - (c_max / f)*exp(A*(1 - f / c_max)); // Exponential softening law
 			if (damage > 0.99) { damage = 0.99; }
-		//	this->Set_NonConvergeddamage(damage);
 		}
 		rIntegratedStress = StressVector;
 		rIntegratedStress *= (1 - damage);
 	}
 
-	void AleCornVelElement::RankineFragileLaw(Vector& rIntegratedStress, double& damage, const Vector& StressVector, int cont, double l_char) 
+	void AleCornVelElement::RankineFragileLaw(
+		Vector& rIntegratedStress, 
+		double& damage, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	) 
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStress(PrincipalStressVector, StressVector);
@@ -1615,12 +1605,39 @@ namespace Kratos
 		}
 		else
 		{
-			//damage = 1 - (c_max / f)*exp(A*(1 - f / c_max));            // Exponential softening law
-			//if (damage > 0.99) { damage = 0.99; }
 			damage = 0.98;  // Fragile  law
 		}
 		rIntegratedStress = StressVector;
 		rIntegratedStress *= (1 - damage);
 	}
+
+
+	void AleCornVelElement::SetValueOnIntegrationPoints(
+		const Variable<double>& rVariable,
+		std::vector<double>& rValues,
+		const ProcessInfo& rCurrentProcessInfo
+	)
+	{
+		for ( unsigned int point_number = 0; point_number < GetGeometry().IntegrationPoints(  ).size(); ++point_number ) 
+		{
+			this->SetValue(rVariable, rValues[point_number]);
+		}
+
+	}
+
+	void AleCornVelElement::SetValueOnIntegrationPoints(
+		const Variable<Vector>& rVariable,
+		std::vector<Vector>& rValues,
+		const ProcessInfo& rCurrentProcessInfo
+	)
+	{
+
+		for ( unsigned int point_number = 0; point_number < GetGeometry().IntegrationPoints(  ).size(); ++point_number ) 
+		{
+			this->SetValue(rVariable, rValues[point_number]);
+		}
+	}
+
+
 
 } // Element

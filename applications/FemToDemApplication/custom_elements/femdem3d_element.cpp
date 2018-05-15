@@ -360,7 +360,11 @@ namespace Kratos
 		KRATOS_CATCH("")
 	}
 
-	void FemDem3DElement::CalculateLocalSystem (MatrixType& rLeftHandSideMatrix, VectorType& rRightHandSideVector, ProcessInfo& rCurrentProcessInfo)
+	void FemDem3DElement::CalculateLocalSystem(
+		MatrixType& rLeftHandSideMatrix, 
+		VectorType& rRightHandSideVector, 
+		ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		KRATOS_TRY
 
@@ -516,8 +520,11 @@ namespace Kratos
 		}	
 	}
 
-	void FemDem3DElement::CalculateConstitutiveMatrix(Matrix& rConstitutiveMatrix, const double &rYoungModulus,
-		const double &rPoissonCoefficient)
+	void FemDem3DElement::CalculateConstitutiveMatrix(
+		Matrix& rConstitutiveMatrix, 
+		const double rYoungModulus,
+		const double rPoissonCoefficient
+	)
 	{
 		rConstitutiveMatrix.clear();
 
@@ -618,12 +625,16 @@ namespace Kratos
 		KRATOS_CATCH("")
 	}
 
-	void FemDem3DElement::CalculateStressVector(Vector& rStressVector, const Matrix& rConstitutiveMAtrix, const Vector& rInfinitesimalStrainVector)
+	void FemDem3DElement::CalculateStressVector(
+		Vector& rStressVector, 
+		const Matrix& rConstitutiveMAtrix, 
+		const Vector& rInfinitesimalStrainVector
+	)
 	{
 		noalias(rStressVector) = prod(rConstitutiveMAtrix, rInfinitesimalStrainVector);
 	}
 
-	void FemDem3DElement::CalculatePrincipalStresses(Vector& rPrincipalStressVector, const Vector StressVector)
+	void FemDem3DElement::CalculatePrincipalStresses(Vector& rPrincipalStressVector, const Vector& StressVector)
 	{
 		rPrincipalStressVector.resize(3);
 		double I1, I2, I3, phi, Num, Denom, II1;
@@ -672,13 +683,17 @@ namespace Kratos
 		int m = w.size();
 		if (n != m) KRATOS_ERROR << "The dimension of the vectors are different or null";
 		rAverageVector.resize(n);
+
 		for (int cont = 0;cont < n;cont++)
 		{
 			rAverageVector[cont] = (v[cont] + w[cont])*0.5;
 		}
 	}
 
-	void FemDem3DElement::CalculateAverageStressOnEdge(Vector& rAverageVector, const std::vector<Element*> VectorOfElems)
+	void FemDem3DElement::CalculateAverageStressOnEdge(
+		Vector& rAverageVector, 
+		const std::vector<Element*> VectorOfElems
+	)
 	{
 		Vector CurrentElementStress = this->GetValue(STRESS_VECTOR);
 		rAverageVector = CurrentElementStress;
@@ -702,7 +717,10 @@ namespace Kratos
 		rAverageVector /= (counter + 1);
 	}
 
-	void FemDem3DElement::CalculateAverageStrainOnEdge(Vector& rAverageVector, const std::vector<Element*> VectorOfElems)
+	void FemDem3DElement::CalculateAverageStrainOnEdge(
+		Vector& rAverageVector, 
+		const std::vector<Element*> VectorOfElems
+	)
 	{
 		Vector CurrentElementStress = this->GetValue(STRAIN_VECTOR);
 		rAverageVector = CurrentElementStress;
@@ -727,8 +745,11 @@ namespace Kratos
 	}
 
 	// Double values
-	void FemDem3DElement::GetValueOnIntegrationPoints(const Variable<double>& rVariable, std::vector<double>& rValues,
-		const ProcessInfo& rCurrentProcessInfo)
+	void FemDem3DElement::GetValueOnIntegrationPoints(
+		const Variable<double>& rVariable, 
+		std::vector<double>& rValues,
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		if (rVariable == DAMAGE_ELEMENT || rVariable == IS_DAMAGED || rVariable == STRESS_THRESHOLD)
 		{
@@ -737,9 +758,11 @@ namespace Kratos
 	}
 
 	// Vector Values
-	void FemDem3DElement::GetValueOnIntegrationPoints(const Variable<Vector>& rVariable,
+	void FemDem3DElement::GetValueOnIntegrationPoints(
+		const Variable<Vector>& rVariable,
 		std::vector<Vector>& rValues,
-		const ProcessInfo& rCurrentProcessInfo)
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		if (rVariable == STRAIN_VECTOR)
 		{
@@ -758,9 +781,11 @@ namespace Kratos
 	}
 
 	// Tensor variables
-	void FemDem3DElement::GetValueOnIntegrationPoints( const Variable<Matrix>& rVariable,
+	void FemDem3DElement::GetValueOnIntegrationPoints( 
+		const Variable<Matrix>& rVariable,
 		std::vector<Matrix>& rValues,
-		const ProcessInfo& rCurrentProcessInfo )
+		const ProcessInfo& rCurrentProcessInfo 
+	)
 	{
 		if (rVariable == STRAIN_TENSOR)
 		{
@@ -779,7 +804,11 @@ namespace Kratos
 	}
 
 	// DOUBLE VARIABLES
-	void FemDem3DElement::CalculateOnIntegrationPoints(const Variable<double>& rVariable, std::vector<double>& rOutput, const ProcessInfo& rCurrentProcessInfo)
+	void FemDem3DElement::CalculateOnIntegrationPoints(
+		const Variable<double>& rVariable, 
+		std::vector<double>& rOutput, 
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		if (rVariable == DAMAGE_ELEMENT)
 		{
@@ -808,7 +837,11 @@ namespace Kratos
 	}
 
 	// 	VECTOR VARIABLES
-	void FemDem3DElement::CalculateOnIntegrationPoints(const Variable<Vector>& rVariable, std::vector<Vector>& rOutput, const ProcessInfo& rCurrentProcessInfo)
+	void FemDem3DElement::CalculateOnIntegrationPoints(
+		const Variable<Vector>& rVariable, 
+		std::vector<Vector>& rOutput, 
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		KRATOS_TRY
 
@@ -830,7 +863,11 @@ namespace Kratos
 	}
 
 	// 	TENSOR VARIABLES
-	void FemDem3DElement::CalculateOnIntegrationPoints(const Variable<Matrix >& rVariable, std::vector< Matrix >& rOutput, const ProcessInfo& rCurrentProcessInfo)
+	void FemDem3DElement::CalculateOnIntegrationPoints(
+		const Variable<Matrix >& rVariable, 
+		std::vector< Matrix >& rOutput, 
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
     	const unsigned int& integration_points_number = GetGeometry().IntegrationPointsNumber( mThisIntegrationMethod );
     	const unsigned int dimension       = GetGeometry().WorkingSpaceDimension();
@@ -1133,8 +1170,13 @@ namespace Kratos
 
 
 	// ******* DAMAGE MECHANICS YIELD SURFACES AND EXPONENTIAL SOFTENING ********
-	void FemDem3DElement::IntegrateStressDamageMechanics(Vector& rIntegratedStress, double& rdamage,
-		const Vector StrainVector, const Vector StressVector, int cont, double l_char)
+	void FemDem3DElement::IntegrateStressDamageMechanics(
+		Vector& rIntegratedStress, 
+		double& rdamage,
+		const Vector& StrainVector, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char)
 	{
 		std::string yield_surface = this->GetProperties()[YIELD_SURFACE];
 
@@ -1146,7 +1188,13 @@ namespace Kratos
 		else { KRATOS_ERROR << " Yield Surface not defined "; }
 	}
 
-	void FemDem3DElement::ModifiedMohrCoulombCriterion(Vector& rIntegratedStress, double& rdamage, const Vector& StressVector,int cont, double l_char)
+	void FemDem3DElement::ModifiedMohrCoulombCriterion(
+		Vector& rIntegratedStress, 
+		double& rdamage, 
+		const Vector& StressVector,
+		int cont, 
+		double l_char
+	)
 	{
 		rIntegratedStress.resize(6);
 
@@ -1206,7 +1254,7 @@ namespace Kratos
 		}
 		else
 		{
-			rdamage = 1 - (c_max / f)*exp(A*(1 - f / c_max));            // Exponential softening law
+			rdamage = 1 - (c_max / f)*exp(A*(1 - f / c_max)); // Exponential softening law
 			if (rdamage > 0.99) { rdamage = 0.99; }
 		}
 
@@ -1214,7 +1262,13 @@ namespace Kratos
 		rIntegratedStress *= (1 - rdamage);
 	}
 
-	void FemDem3DElement::RankineCriterion(Vector& rIntegratedStress, double& damage, const Vector& StressVector, int cont, double l_char) 
+	void FemDem3DElement::RankineCriterion(
+		Vector& rIntegratedStress, 
+		double& damage, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	) 
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStresses(PrincipalStressVector, StressVector);
@@ -1252,7 +1306,13 @@ namespace Kratos
 		rIntegratedStress *= (1 - damage);
 	}
 
-	void FemDem3DElement::DruckerPragerCriterion(Vector& rIntegratedStress, double& damage, const Vector& StressVector, int cont, double l_char)
+	void FemDem3DElement::DruckerPragerCriterion(
+		Vector& rIntegratedStress, 
+		double& damage, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	)
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStresses(PrincipalStressVector, StressVector);
@@ -1313,7 +1373,14 @@ namespace Kratos
 		rIntegratedStress *= (1 - damage);
 	}
 
-	void FemDem3DElement::SimoJuCriterion(Vector& rIntegratedStress, double& damage,  const Vector& StrainVector,  const Vector& StressVector, int cont, double l_char)
+	void FemDem3DElement::SimoJuCriterion(
+		Vector& rIntegratedStress, 
+		double& damage,  
+		const Vector& StrainVector,  
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	)
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStresses(PrincipalStressVector, StressVector);
@@ -1374,7 +1441,13 @@ namespace Kratos
 		rIntegratedStress *= (1 - damage);
 	}
 
-	void FemDem3DElement::RankineFragileLaw(Vector& rIntegratedStress, double& damage, const Vector& StressVector, int cont, double l_char) 
+	void FemDem3DElement::RankineFragileLaw(
+		Vector& rIntegratedStress, 
+		double& damage, 
+		const Vector& StressVector, 
+		int cont, 
+		double l_char
+	) 
 	{
 		Vector PrincipalStressVector = ZeroVector(3);
 		this->CalculatePrincipalStresses(PrincipalStressVector, StressVector);

@@ -237,7 +237,6 @@ void InternalVariablesInterpolationProcess::InterpolateGaussPointsClosestPointTr
                         GetAndSetDirectVariableOnElements(this_var, p_gp_origin, it_elem, i_gauss_point, current_process_info);
 						std::vector<double> values;
 						it_elem->GetValueOnIntegrationPoints(this_var, values, current_process_info);
-						KRATOS_WATCH(values)
                 }
                 for (auto& this_var : mInternalArrayVariableList) {
                     if (p_destination_cl->Has(this_var))

@@ -87,17 +87,17 @@ namespace Kratos
 		void CalculatePlasticParameters(const Vector& StressVector,double& rYield, double& rKp,
 			double& rPlasticDenominator, Vector& rFluxVector, double& Capap,  const Vector& PlasticStrainIncr, const Matrix& C);
 		void VonMisesYieldCriterion(const Vector& StressVector, Vector& rDeviator, double& ryield, double& rJ2);
-		void CalculateFluxVector(const Vector& StressVector, const Vector& rDeviator, const double& J2, Vector& rFluxVector);
+		void CalculateFluxVector(const Vector& StressVector, const Vector& rDeviator, const double J2, Vector& rFluxVector);
 		void CalculateRFactors(const Vector& StressVector,double& r0, double& r1);
-		void CalculatePlasticDissipation(const Vector& PredictiveSress, const double& r0, const double& r1,
+		void CalculatePlasticDissipation(const Vector& PredictiveSress, const double r0, const double r1,
 	 		const Vector& PlasticStrainInc ,double& Capap, Vector& rHCapa);
-		void CalculateEquivalentStressThreshold(const double& Capap, const double& r0, const double& r1,
+		void CalculateEquivalentStressThreshold(const double Capap, const double r0, const double r1,
 			double& rEquivalentStressThreshold, double& rSlope);
-		void LinearCalculateThreshold(const double& Capap, const double& Gf, double& rEqThreshold, double& rSlope);
-		void CalculateHardeningParameter(const Vector& FluxVector, const double& SlopeThreshold,
+		void LinearCalculateThreshold(const double Capap, const double Gf, double& rEqThreshold, double& rSlope);
+		void CalculateHardeningParameter(const Vector& FluxVector, const double SlopeThreshold,
 			const Vector& HCapa, double& HardeningParam);
 		void CalculatePlasticDenominator(const Vector& FluxVector, const Matrix& ElasticConstMatrix,
-			const double& HardeningParam, double& rPlasticDenominator);
+			const double HardeningParam, double& rPlasticDenominator);
 
     private:
 

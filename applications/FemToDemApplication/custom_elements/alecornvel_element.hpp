@@ -178,7 +178,7 @@ namespace Kratos
 		double GetMaxValue(Vector Strain);
 		double GetMaxAbsValue(Vector Strain);
 		double GetMinAbsValue(Vector Strain);
-		void PerturbateStrainComponent(const Vector& rStrainVector, Vector& PertubatedStrain, const double& perturbation, int component);
+		void PerturbateStrainComponent(const Vector& rStrainVector, Vector& PertubatedStrain, const double perturbation, int component);
 		double CalculatePerturbation(const Vector& StrainVector, int component);
 		void CalculateTangentTensor(Matrix& rTangentTensor, const Vector& StrainVector, const Vector& IntegratedStressVector ,int cont, double L_char);
 
@@ -198,6 +198,16 @@ namespace Kratos
 
 		void SetIntegrationCoefficient(double tomIntegrationCoefficient){ mIntegrationCoefficient = tomIntegrationCoefficient;}
 		double GetIntegrationCoefficient(){ return mIntegrationCoefficient; }
+
+		void AleCornVelElement::SetValueOnIntegrationPoints(
+			const Variable<double>& rVariable,
+			std::vector<double>& rValues,
+			const ProcessInfo& rCurrentProcessInfo);
+
+		void AleCornVelElement::SetValueOnIntegrationPoints(
+			const Variable<Vector>& rVariable,
+			std::vector<Vector>& rValues,
+			const ProcessInfo& rCurrentProcessInfo);
 		
 	private:
 		int iteration = 0;

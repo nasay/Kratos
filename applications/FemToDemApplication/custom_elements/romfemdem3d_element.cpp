@@ -205,9 +205,8 @@ namespace Kratos
         Vector StressVectorSteel;
         if (this->GetProperties()[STEEL_VOLUMETRIC_PART] > 0.0)
         {
-			Vector ElasticStrainVector = StrainVector - this->GetPlasticDeformation();
+			Vector ElasticStrainVector = StrainVector - this->GetPlasticDeformation(); // E-Ep
             StressVectorSteel = prod(ConstitutiveMatrixSteel, ElasticStrainVector);
-			//StressVectorSteel = prod(ConstitutiveMatrixSteel, StrainVector);
         }
         else StressVectorSteel = ZeroVector(voigt_size);
         
@@ -243,8 +242,11 @@ namespace Kratos
 		rAverageVector /= (counter + 1);
 	}
 
-
-	void RomFemDem3DElement::CalculateLocalSystem (MatrixType& rLeftHandSideMatrix, VectorType& rRightHandSideVector, ProcessInfo& rCurrentProcessInfo)
+	void RomFemDem3DElement::CalculateLocalSystem(
+		MatrixType& rLeftHandSideMatrix, 
+		VectorType& rRightHandSideVector, 
+		ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		KRATOS_TRY
 
@@ -398,7 +400,11 @@ namespace Kratos
 	}
 
     // 	TENSOR VARIABLES
-	void RomFemDem3DElement::CalculateOnIntegrationPoints(const Variable<Matrix >& rVariable, std::vector< Matrix >& rOutput, const ProcessInfo& rCurrentProcessInfo)
+	void RomFemDem3DElement::CalculateOnIntegrationPoints(
+		const Variable<Matrix >& rVariable, 
+		std::vector< Matrix >& rOutput, 
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
     	const unsigned int& integration_points_number = GetGeometry().IntegrationPointsNumber( mThisIntegrationMethod );
     	const unsigned int dimension       = GetGeometry().WorkingSpaceDimension();
@@ -437,9 +443,11 @@ namespace Kratos
     }
 
 	// Tensor variables
-	void RomFemDem3DElement::GetValueOnIntegrationPoints( const Variable<Matrix>& rVariable,
+	void RomFemDem3DElement::GetValueOnIntegrationPoints(
+		const Variable<Matrix>& rVariable,
 		std::vector<Matrix>& rValues,
-		const ProcessInfo& rCurrentProcessInfo )
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		if (rVariable == STRAIN_TENSOR)
 		{
@@ -460,7 +468,11 @@ namespace Kratos
 	}
 
 	// **** plasticity methods *****
-	void RomFemDem3DElement::IntegrateStressPlasticity(Vector& rIntegratedStress, const Vector& PredictiveStress, const Matrix& C)
+	void RomFemDem3DElement::IntegrateStressPlasticity(
+		Vector& rIntegratedStress, 
+		const Vector& PredictiveStress, 
+		const Matrix& C
+	)
 	{ // ecuua
 		int iter = 0, iter_max = 9000;
 		
@@ -482,7 +494,7 @@ namespace Kratos
 
 		double F = Yield - Kp;
 
-		if (F <= abs(1.0e-15 * Kp))  // Elastic
+		if (F <= std::abs(1.0e-15 * Kp))  // Elastic
 		{
 			rIntegratedStress = PredictiveStress;
 			this->SetNonConvergedKp(Kp);
@@ -513,7 +525,7 @@ namespace Kratos
 
 				F = Yield - Kp;
 
-				if (F < abs(1.0e-15 * Kp))  // Has converged
+				if (F < std::abs(1.0e-15 * Kp))  // Has converged
 				{
 					Conv = true;
 					
@@ -524,13 +536,17 @@ namespace Kratos
 					this->SetValue(EQUIVALENT_STRESS_VM, Yield);
 				}
 				else iter++;
-
-				if (iter == iter_max) KRATOS_ERROR << "Reached Max iterations inside Plasticity Loop" << std::endl;
 			}
+			if (iter == iter_max) KRATOS_ERROR << "Reached Max iterations inside Plasticity Loop" << std::endl;
 		}
 	}
 
-	void RomFemDem3DElement::VonMisesYieldCriterion(const Vector& StressVector, Vector& rDeviator, double& ryield, double& rJ2)
+	void RomFemDem3DElement::VonMisesYieldCriterion(
+		const Vector& StressVector, 
+		Vector& rDeviator, 
+		double& ryield, 
+		double& rJ2
+	)
 	{
 		double I1 = this->Calculate_I1_Invariant(StressVector);
 
@@ -547,9 +563,17 @@ namespace Kratos
 		ryield = sqrt(3.0*rJ2);
 	}
 
-	void RomFemDem3DElement::CalculatePlasticParameters(const Vector& StressVector, double& rYield, double& rKp,
-		double& rPlasticDenominator, Vector& rFluxVector, double& rCapap, const Vector& PlasticStrainIncr, const Matrix& C)
-	{ // modaux
+	void RomFemDem3DElement::CalculatePlasticParameters(
+		const Vector& StressVector, 
+		double& rYield, 
+		double& rKp,
+		double& rPlasticDenominator, 
+		Vector& rFluxVector, 
+		double& rCapap, 
+		const Vector& PlasticStrainIncr, 
+		const Matrix& C
+	)
+	{   // modaux
 		Vector Deviator = ZeroVector(6), HCapa = ZeroVector(6);
 		double J2 = 0.0, r0 = 0.0, r1 = 0.0, Slope = 0.0, HardeningParam = 0.0;
 
@@ -562,7 +586,12 @@ namespace Kratos
 		this->CalculatePlasticDenominator(rFluxVector, C, HardeningParam, rPlasticDenominator);
 	}
 
-	void RomFemDem3DElement::CalculateFluxVector(const Vector& StressVector, const Vector& rDeviator, const double& J2, Vector& rFluxVector)
+	void RomFemDem3DElement::CalculateFluxVector(
+		const Vector& StressVector, 
+		const Vector& rDeviator, 
+		const double J2, 
+		Vector& rFluxVector
+	)
 	{
 		// Only valid for Von Mises Yield Surf
 		Vector AuxVec = ZeroVector(6);
@@ -590,7 +619,7 @@ namespace Kratos
 
 		for (int i = 0; i < 3; i++)
 		{
-			SA[i] = abs(PrincipalStresses[i]);
+			SA[i] = std::abs(PrincipalStresses[i]);
 			SB[i] = 0.5*(PrincipalStresses[i]  + SA[i]);
 			SC[i] = 0.5*(-PrincipalStresses[i] + SA[i]);
 
@@ -610,8 +639,14 @@ namespace Kratos
 		}
 	}
 
-	void RomFemDem3DElement::CalculatePlasticDissipation(const Vector& PredictiveSress, const double& r0, const double& r1,
-	 const Vector& PlasticStrainInc, double& rCapap, Vector& rHCapa)
+	void RomFemDem3DElement::CalculatePlasticDissipation(
+		const Vector& PredictiveSress, 
+		const double r0, 
+		const double r1,
+	    const Vector& PlasticStrainInc, 
+		double& rCapap, 
+		Vector& rHCapa
+	)
 	{
 		double n, Gf, Gfc, l_char, hlim, C0, C1, fc, ft, Volume, gf, gfc, E;
 
@@ -649,8 +684,13 @@ namespace Kratos
 		if (rCapap >= 1.0) rCapap = 0.9999;
 	}
 
-	void RomFemDem3DElement::CalculateEquivalentStressThreshold(const double& Capap, const double& r0, const double& r1,
-		double& rEquivalentStressThreshold, double& rSlope)
+	void RomFemDem3DElement::CalculateEquivalentStressThreshold(
+		const double Capap,
+		const double r0,
+		const double r1,
+		double& rEquivalentStressThreshold,
+		double& rSlope
+	)
 	{
 		double fc, ft, n;
 		fc = this->GetProperties()[YIELD_STRESS_C_STEEL];
@@ -669,7 +709,12 @@ namespace Kratos
 		rSlope = rEquivalentStressThreshold*((r0 * Slopes[0] / EqTrhesholds[0]) + (r1 * Slopes[1] / EqTrhesholds[1]));
 	}
 
-	void RomFemDem3DElement::LinearCalculateThreshold(const double& Capap, const double& Gf, double& rEqThreshold, double& rSlope)
+	void RomFemDem3DElement::LinearCalculateThreshold(
+		const double Capap, 
+		const double Gf, 
+		double& rEqThreshold, 
+		double& rSlope
+	)
 	{
 		double fc = this->GetProperties()[YIELD_STRESS_C_STEEL];
 		// Linear case!!
@@ -677,8 +722,12 @@ namespace Kratos
 		rSlope = -0.5 * (fc*fc / (rEqThreshold));
 	}
 
-	void RomFemDem3DElement::CalculateHardeningParameter(const Vector& FluxVector, const double& SlopeThreshold,
-		const Vector& HCapa, double& rHardeningParam)
+	void RomFemDem3DElement::CalculateHardeningParameter(
+		const Vector& FluxVector, 
+		const double SlopeThreshold,
+		const Vector& HCapa, 
+		double& rHardeningParam
+	)
 	{
 		rHardeningParam = -SlopeThreshold;
 		double aux = 0.0;
@@ -690,8 +739,12 @@ namespace Kratos
 		if (aux != 0.0) rHardeningParam *= aux;
 	}
 
-	void RomFemDem3DElement::CalculatePlasticDenominator(const Vector& FluxVector, const Matrix& ElasticConstMatrix,
-		const double& HardeningParam, double& rPlasticDenominator)
+	void RomFemDem3DElement::CalculatePlasticDenominator(
+		const Vector& FluxVector, 
+		const Matrix& ElasticConstMatrix,
+		const double HardeningParam, 
+		double& rPlasticDenominator
+	)
 	{   // only for isotropic hardening
 		double A1 = 0.0, A2 = 0.0, A3 = 0.0;
 		Vector Dvect;
@@ -707,7 +760,6 @@ namespace Kratos
 
 		rPlasticDenominator = 1 / (A1 + A2 + A3);
 	}
-
 
 
 	void RomFemDem3DElement::FinalizeSolutionStep(ProcessInfo& rCurrentProcessInfo)
@@ -784,8 +836,11 @@ namespace Kratos
 	}
 
 	// Double values
-	void RomFemDem3DElement::GetValueOnIntegrationPoints(const Variable<double>& rVariable, std::vector<double>& rValues,
-		const ProcessInfo& rCurrentProcessInfo)
+	void RomFemDem3DElement::GetValueOnIntegrationPoints(
+		const Variable<double>& rVariable, 
+		std::vector<double>& rValues,
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		if (rVariable == DAMAGE_ELEMENT || rVariable == IS_DAMAGED || rVariable == STRESS_THRESHOLD || rVariable == PLASTIC_DISSIPATION_CAPAP)
 		{
@@ -794,7 +849,11 @@ namespace Kratos
 	}
 
 	// DOUBLE VARIABLES
-	void RomFemDem3DElement::CalculateOnIntegrationPoints(const Variable<double>& rVariable, std::vector<double>& rOutput, const ProcessInfo& rCurrentProcessInfo)
+	void RomFemDem3DElement::CalculateOnIntegrationPoints(
+		const Variable<double>& rVariable, 
+		std::vector<double>& rOutput, 
+		const ProcessInfo& rCurrentProcessInfo
+	)
 	{
 		if (rVariable == DAMAGE_ELEMENT)
 		{

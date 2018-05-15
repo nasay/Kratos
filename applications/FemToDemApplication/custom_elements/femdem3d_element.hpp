@@ -53,8 +53,8 @@ namespace Kratos
 		void InitializeSolutionStep(ProcessInfo& rCurrentProcessInfo);
 		void FinalizeSolutionStep(ProcessInfo& rCurrentProcessInfo);
 		void InitializeNonLinearIteration(ProcessInfo& CurrentProcessInfo);
-		void CalculateConstitutiveMatrix(Matrix& rConstitutiveMatrix, const double &rYoungModulus,
-			const double &rPoissonCoefficient);
+		void CalculateConstitutiveMatrix(Matrix& rConstitutiveMatrix, const double rYoungModulus,
+			const double rPoissonCoefficient);
 
 		void CalculateDN_DX(Matrix& rDN_DX, int PointNumber);
 
@@ -62,7 +62,7 @@ namespace Kratos
 
 		void CalculateStressVector(Vector& rStressVector, const Matrix& rConstitutiveMAtrix, const Vector& rInfinitesimalStrainVector);
 
-		void CalculatePrincipalStresses(Vector& PrincipalStressVector, const Vector StressVector);
+		void CalculatePrincipalStresses(Vector& PrincipalStressVector, const Vector& StressVector);
 
 		void FinalizeNonLinearIteration(ProcessInfo& CurrentProcessInfo);
 
@@ -91,7 +91,7 @@ namespace Kratos
 		void Get2MinValues(Vector& MaxValues, double a, double b, double c);
 
 		void IntegrateStressDamageMechanics(Vector& rIntegratedStress, 
-			double& rDamage, const Vector StrainVector, const Vector StressVector, int cont, double L_char);
+			double& rDamage, const Vector& StrainVector, const Vector& StressVector, int cont, double L_char);
 
 
 		void ModifiedMohrCoulombCriterion(Vector& rIntegratedStress, double& Damage, const Vector& StressVector, int cont, double L_char);
