@@ -109,47 +109,14 @@ class FEMDEM_Solution:
 		KratosFemDem.StressToNodesProcess(self.FEM_Solution.main_model_part, 2).Execute()
 
 
-		# ******************************************** TESTING for MMR
-		# ********************************************
-		# We fill the variable EQUIVALENT_NODAL_STRESS with the VonMises stress
-		#KratosFemDem.StressToNodesProcess(self.FEM_Solution.main_model_part, 2).Execute()
-
-		#self.FEM_Solution.main_model_part.GetElement(7).Set(KratosMultiphysics.TO_ERASE, True)
-		#self.FEM_Solution.main_model_part.RemoveElementsFromAllLevels(KratosMultiphysics.TO_ERASE)
-		
-		'''
-		if self.FEM_Solution.step == 1:
-
-			#put damage
-			for elem in self.FEM_Solution.main_model_part.Elements:
-				if elem.Id == 121:
-					#pass
-					elem.SetValue(KratosFemDem.DAMAGE_ELEMENT, 0.5)
-		'''
-
-		'''
-		for elem in self.FEM_Solution.main_model_part.Elements:
-			#print(elem.GetValue(KratosFemDem.DAMAGE_ELEMENT))
-			print(elem.GetValuesOnIntegrationPoints(KratosFemDem.DAMAGE_ELEMENT,self.FEM_Solution.main_model_part.ProcessInfo)[0][0])
-			print("GetValueOn")
-		'''
-
-		#Wait()
-			
-			#self.FEM_Solution.GraphicalOutputPrintOutput()
-			#Wait()
-			
-			
-
-
-		# ******************************************** TESTING for MMR
-
 		self.DEM_Solution.InitializeTimeStep()
-
 		self.DEM_Solution.time = self.FEM_Solution.time
 		self.DEM_Solution.step = self.FEM_Solution.step
 
-		self.DEM_Solution.DEMFEMProcedures.UpdateTimeInModelParts(self.DEM_Solution.all_model_parts, self.DEM_Solution.time,self.DEM_Solution.dt,self.DEM_Solution.step)
+		self.DEM_Solution.DEMFEMProcedures.UpdateTimeInModelParts(self.DEM_Solution.all_model_parts, 
+			                                                      self.DEM_Solution.time,
+			                                                      self.DEM_Solution.dt,
+			                                                      self.DEM_Solution.step)
 		self.DEM_Solution.BeforeSolveOperations(self.DEM_Solution.time)
 
 		#### SOLVE DEM #########################################
@@ -642,7 +609,6 @@ class FEMDEM_Solution:
 	def WritePostListFile(self):
 
 		post_file_name = self.FEM_Solution.problem_name + ".post.lst"
-		#time_label = round(self.DEM_Solution.time_old_print, 2)
 		time_label = round(self.FEM_Solution.step, 0)
 		PostListFile = open(post_file_name, "w")
 		PostListFile.write("Merge\n\n")

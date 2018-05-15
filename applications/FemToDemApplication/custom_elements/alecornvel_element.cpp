@@ -232,7 +232,6 @@ namespace Kratos
 				double detJ = 0;
 				MathUtils<double>::InvertMatrix(J[PointNumber], InvJ, detJ);
 
-
 				if (detJ < 0)
 				{
 					this->Set(ACTIVE, false); // element alone inside a crack
@@ -667,7 +666,6 @@ namespace Kratos
 
 	void AleCornVelElement::FinalizeNonLinearIteration(ProcessInfo& CurrentProcessInfo)
 	{
-
 	}
 
 	void AleCornVelElement::AverageVector(Vector& rAverageVector, const Vector& v, const Vector& w)
@@ -676,7 +674,7 @@ namespace Kratos
 		int m = w.size();
 		if (n != m) KRATOS_ERROR << "The dimension of the vectors are different or null";
 		rAverageVector.resize(n);
-		for (int cont = 0;cont < n;cont++)
+		for (int cont = 0;cont < n; cont++)
 		{
 			rAverageVector[cont] = (v[cont] + w[cont])*0.5;
 		}
@@ -1325,7 +1323,7 @@ namespace Kratos
 		Gt = this->GetProperties()[FRAC_ENERGY_T];
 
 		// Check input variables 
-		if (friction_angle < 1e-24) { friction_angle = 32 * 3.14159 / 180; std::cout << "Friction Angle not defined, assumed equal to 32� " << std::endl; }
+		if (friction_angle < 1e-24) { friction_angle = 32 * 3.14159 / 180; std::cout << "Friction Angle not defined, assumed equal to 32 " << std::endl; }
 		if (sigma_c < 1e-24) { KRATOS_ERROR << " ERROR: Yield stress in compression not defined, include YIELD_STRESS_C in .mdpa "; }
 		if (sigma_t < 1e-24) { KRATOS_ERROR << " ERROR: Yield stress in tension not defined, include YIELD_STRESS_T in .mdpa "; }
 		if (Gt < 1e-24) { KRATOS_ERROR << " ERROR: Fracture Energy not defined in the model part, include FRAC_ENERGY_T in .mdpa "; }
@@ -1449,7 +1447,7 @@ namespace Kratos
 		Gt = this->GetProperties()[FRAC_ENERGY_T];
 
 		// Check input variables 
-		if (friction_angle < 1e-24) { friction_angle = 32 * 3.14159 / 180; std::cout << "Friction Angle not defined, assumed equal to 32� " << std::endl; }
+		if (friction_angle < 1e-24) { friction_angle = 32 * 3.14159 / 180; std::cout << "Friction Angle not defined, assumed equal to 32deg " << std::endl; }
 		if (sigma_c < 1e-24) { KRATOS_ERROR << " ERROR: Yield stress in compression not defined, include YIELD_STRESS_C in .mdpa "; }
 		if (sigma_t < 1e-24) { KRATOS_ERROR << " ERROR: Yield stress in tension not defined, include YIELD_STRESS_T in .mdpa "; }
 		if (Gt < 1e-24) { KRATOS_ERROR << " ERROR: Fracture Energy not defined in the model part, include FRAC_ENERGY_T in .mdpa "; }
@@ -1611,7 +1609,6 @@ namespace Kratos
 		rIntegratedStress *= (1 - damage);
 	}
 
-
 	void AleCornVelElement::SetValueOnIntegrationPoints(
 		const Variable<double>& rVariable,
 		std::vector<double>& rValues,
@@ -1622,7 +1619,6 @@ namespace Kratos
 		{
 			this->SetValue(rVariable, rValues[point_number]);
 		}
-
 	}
 
 	void AleCornVelElement::SetValueOnIntegrationPoints(
@@ -1631,13 +1627,10 @@ namespace Kratos
 		const ProcessInfo& rCurrentProcessInfo
 	)
 	{
-
 		for ( unsigned int point_number = 0; point_number < GetGeometry().IntegrationPoints(  ).size(); ++point_number ) 
 		{
 			this->SetValue(rVariable, rValues[point_number]);
 		}
 	}
-
-
 
 } // Element
