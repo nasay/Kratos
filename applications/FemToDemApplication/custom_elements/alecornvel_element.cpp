@@ -660,8 +660,8 @@ namespace Kratos
 	void AleCornVelElement::CalculatePrincipalStress(Vector& PrincipalStressVector, const Vector StressVector)
 	{
 		PrincipalStressVector.resize(2);
-		PrincipalStressVector[0] = 0.5*(StressVector[0] + StressVector[1]) + sqrt(pow(0.5*(StressVector[0] - StressVector[1]), 2) + pow(StressVector[2], 2));
-		PrincipalStressVector[1] = 0.5*(StressVector[0] + StressVector[1]) - sqrt(pow(0.5*(StressVector[0] - StressVector[1]), 2) + pow(StressVector[2], 2));
+		PrincipalStressVector[0] = 0.5*(StressVector[0] + StressVector[1]) + std::sqrt(std::pow(0.5*(StressVector[0] - StressVector[1]), 2) + std::pow(StressVector[2], 2));
+		PrincipalStressVector[1] = 0.5*(StressVector[0] + StressVector[1]) - std::sqrt(std::pow(0.5*(StressVector[0] - StressVector[1]), 2) + std::pow(StressVector[2], 2));
 	}
 
 	void AleCornVelElement::FinalizeNonLinearIteration(ProcessInfo& CurrentProcessInfo)
@@ -876,7 +876,7 @@ namespace Kratos
 		// Computation of the l_char
 		if (aux < 3) 
 		{                                                                                        // It is not an edge element --> The 2 elements are not equal
-			l_char = pow((pow(Xcoord[0] - Xcoord[1], 2) + pow(Ycoord[0] - Ycoord[1], 2)), 0.5);  // Length of the edge between 2 elements                                                                  // Currently the characteristic length is the edge length (can be modified)
+			l_char = std::pow((std::pow(Xcoord[0] - Xcoord[1], 2) + std::pow(Ycoord[0] - Ycoord[1], 2)), 0.5);  // Length of the edge between 2 elements                                                                  // Currently the characteristic length is the edge length (can be modified)
 		}
 		else  // Edge Element
 		{ 
@@ -939,7 +939,7 @@ namespace Kratos
 	double AleCornVelElement::Calculate_I1_Invariant(double sigma1, double sigma2) { return sigma1 + sigma2; }
 	double AleCornVelElement::Calculate_J2_Invariant(double sigma1, double sigma2)
 	{
-		return  (pow((sigma1 - sigma2), 2) + pow(sigma1, 2) + pow(sigma2, 2)) / 6;
+		return  (std::pow((sigma1 - sigma2), 2) + std::pow(sigma1, 2) + std::pow(sigma2, 2)) / 6.0;
 	}
 	double AleCornVelElement::Calculate_J3_Invariant(double sigma1, double sigma2, double I1)
 	{
@@ -1236,22 +1236,22 @@ namespace Kratos
 		if (Gt < 1e-24) { KRATOS_ERROR << " ERROR: Fracture Energy not defined in the model part, include FRAC_ENERGY_T in .mdpa "; }
 
 		double K1, K2, K3, Rmorh, R, alpha_r, c_max, theta, c_threshold;
-		R = abs(sigma_c / sigma_t);
-		Rmorh = pow(tan((3.14159 / 4) + friction_angle / 2), 2);
+		R = std::abs(sigma_c / sigma_t);
+		Rmorh = std::pow(tan((3.14159 / 4) + friction_angle / 2), 2);
 		alpha_r = R / Rmorh;
-		c_max = abs(sigma_c);
+		c_max = std::abs(sigma_c);
 
 		double I1, J2, J3;
 		I1 = Calculate_I1_Invariant(PrincipalStressVector[0], PrincipalStressVector[1]);
 		J2 = Calculate_J2_Invariant(PrincipalStressVector[0], PrincipalStressVector[1]);
 		J3 = Calculate_J3_Invariant(PrincipalStressVector[0], PrincipalStressVector[1], I1);
-		K1 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r)*sin(friction_angle);
-		K2 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r) / sin(friction_angle);
-		K3 = 0.5*(1 + alpha_r)*sin(friction_angle) - 0.5*(1 - alpha_r);
+		K1 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r)*std::sin(friction_angle);
+		K2 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r) / std::sin(friction_angle);
+		K3 = 0.5*(1 + alpha_r)*std::sin(friction_angle) - 0.5*(1 - alpha_r);
 
 		double n = sigma_c / sigma_t;
 
-		double A = 1.00 / (n*n*Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
+		double A = 1.00 / (n*n*Gt*E / (l_char *std::pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
 		double f = 0.0, F = 0.0; /// F = f-c = 0 classical definition of yield surface
@@ -1261,7 +1261,7 @@ namespace Kratos
 		else
 		{
 			theta = Calculate_Theta_Angle(J2, J3);
-			f = (2.00*tan(3.14159*0.25 + friction_angle*0.5) / cos(friction_angle))*((I1*K3 / 3) + sqrt(J2)*(K1*cos(theta) - K2*sin(theta)*sin(friction_angle) / sqrt(3)));
+			f = (2.00*std::tan(3.14159*0.25 + friction_angle*0.5) / cos(friction_angle))*((I1*K3 / 3) + sqrt(J2)*(K1*cos(theta) - K2*std::sin(theta)*std::sin(friction_angle) / std::sqrt(3)));
 		}
 
 		if (this->Get_threshold(cont) == 0) 
@@ -1329,23 +1329,23 @@ namespace Kratos
 		if (Gt < 1e-24) { KRATOS_ERROR << " ERROR: Fracture Energy not defined in the model part, include FRAC_ENERGY_T in .mdpa "; }
 
 		double K1, K2, K3, Rmorh, R, alpha_r, c_max, theta, c_threshold;
-		R = abs(sigma_c / sigma_t);
-		Rmorh = pow(tan((3.14159 / 4) + friction_angle / 2), 2);
+		R = std::abs(sigma_c / sigma_t);
+		Rmorh = std::pow(tan((3.14159 / 4) + friction_angle / 2), 2);
 		alpha_r = R / Rmorh;
-		c_max = abs(sigma_c);
+		c_max = std::abs(sigma_c);
 
 		double I1, J2, J3;
 		I1 = Calculate_I1_Invariant(PrincipalStressVector[0], PrincipalStressVector[1]);
 		J2 = Calculate_J2_Invariant(PrincipalStressVector[0], PrincipalStressVector[1]);
 		J3 = Calculate_J3_Invariant(PrincipalStressVector[0], PrincipalStressVector[1], I1);
-		K1 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r)*sin(friction_angle);
-		K2 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r) / sin(friction_angle);
-		K3 = 0.5*(1 + alpha_r)*sin(friction_angle) - 0.5*(1 - alpha_r);
+		K1 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r)*std::sin(friction_angle);
+		K2 = 0.5*(1 + alpha_r) - 0.5*(1 - alpha_r) / std::sin(friction_angle);
+		K3 = 0.5*(1 + alpha_r)*std::sin(friction_angle) - 0.5*(1 - alpha_r);
 
 		double n = sigma_c / sigma_t;
 		double ElementArea = this->GetGeometry().Area();
 
-		double A = 1.00 / (n*n*Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
+		double A = 1.00 / (n*n*Gt*E / (l_char *std::pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
 		double f = 0.0, F = 0.0; /// F = f-c = 0 classical definition of yield surface
@@ -1355,7 +1355,7 @@ namespace Kratos
 		else
 		{
 			theta = Calculate_Theta_Angle(J2, J3);
-			f = (2.00*tan(3.14159*0.25 + friction_angle*0.5) / cos(friction_angle))*((I1*K3 / 3) + sqrt(J2)*(K1*cos(theta) - K2*sin(theta)*sin(friction_angle) / sqrt(3)));
+			f = (2.00*std::tan(3.14159*0.25 + friction_angle*0.5) / std::cos(friction_angle))*((I1*K3 / 3) + std::sqrt(J2)*(K1*std::cos(theta) - K2*std::sin(theta)*std::sin(friction_angle) / std::sqrt(3)));
 		}
 
 		if (this->Get_threshold(cont) == 0) { this->Set_threshold(c_max, cont); }   // 1st iteration sets threshold as c_max
@@ -1397,11 +1397,11 @@ namespace Kratos
 		friction_angle = this->GetProperties()[INTERNAL_FRICTION_ANGLE] * 3.14159 / 180; // In radians!
 		E = this->GetProperties()[YOUNG_MODULUS];
 		Gt = this->GetProperties()[FRAC_ENERGY_T];
-		c_max = abs(sigma_t);
+		c_max = std::abs(sigma_t);
 
 		double ElementArea = this->GetGeometry().Area();
 		//double l_char = sqrt(4 * ElementArea / sqrt(3));
-		double A = 1.00 / (Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
+		double A = 1.00 / (Gt*E / (l_char *std::pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
 		double f, F; /// F = f-c = 0 classical definition of yield surface
@@ -1453,14 +1453,14 @@ namespace Kratos
 		if (Gt < 1e-24) { KRATOS_ERROR << " ERROR: Fracture Energy not defined in the model part, include FRAC_ENERGY_T in .mdpa "; }
 
 		double  c_max, c_threshold;
-		c_max = abs(sigma_t*(3 + sin(friction_angle)) / (3 * sin(friction_angle) - 3));
+		c_max = std::abs(sigma_t*(3.0 + std::sin(friction_angle)) / (3.0 * std::sin(friction_angle) - 3.0));
 
 		double I1, J2;
 		I1 = Calculate_I1_Invariant(PrincipalStressVector[0], PrincipalStressVector[1]);
 		J2 = Calculate_J2_Invariant(PrincipalStressVector[0], PrincipalStressVector[1]);
 
 		double ElementArea = this->GetGeometry().Area();
-		double A = 1.00 / (Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
+		double A = 1.00 / (Gt*E / (l_char *std::pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
 		double f, F; /// F = f-c = 0 classical definition of yield surface
@@ -1471,9 +1471,9 @@ namespace Kratos
 		if (PrincipalStressVector[0] == 0 && PrincipalStressVector[1] == 0) { f = 0; }
 		else
 		{
-			CFL = -sqrt(3)*(3 - sin(friction_angle)) / (3 * sin(friction_angle) - 3);
-			TEN0 = 6 * I1*sin(friction_angle) / (sqrt(3)*(3 - sin(friction_angle))) + sqrt(J2);
-			f = abs(CFL*TEN0);
+			CFL = -std::sqrt(3.0)*(3.0 - std::sin(friction_angle)) / (3.0 * std::sin(friction_angle) - 3.0);
+			TEN0 = 6 * I1*std::sin(friction_angle) / (sqrt(3)*(3 - std::sin(friction_angle))) + std::sqrt(J2);
+			f = std::abs(CFL*TEN0);
 		}
 
 		if (this->Get_threshold(cont) == 0) { this->Set_threshold(c_max, cont); }   // 1st iteration sets threshold as c_max
@@ -1513,15 +1513,15 @@ namespace Kratos
 		Gt = this->GetProperties()[FRAC_ENERGY_T];
 
 		double c_max, c_threshold;
-		n = abs(sigma_c / sigma_t);
-		c_max = abs(sigma_c) / sqrt(E);
+		n = std::abs(sigma_c / sigma_t);
+		c_max = std::abs(sigma_c) / std::sqrt(E);
 
 		double SumA = 0.0, SumB = 0.0, SumC = 0.0, ere0 = 0.0, ere1 = 0.0;
 		for (int cont = 0;cont < 1;cont++)
 		{
-			SumA += abs(PrincipalStressVector[cont]);
-			SumB += 0.5*(PrincipalStressVector[cont] + abs(PrincipalStressVector[cont]));
-			SumC += 0.5*(-PrincipalStressVector[cont] + abs(PrincipalStressVector[cont]));
+			SumA += std::abs(PrincipalStressVector[cont]);
+			SumB += 0.5*(PrincipalStressVector[cont] + std::abs(PrincipalStressVector[cont]));
+			SumC += 0.5*(-PrincipalStressVector[cont] + std::abs(PrincipalStressVector[cont]));
 		}
 		ere0 = SumB / SumA;
 		ere1 = SumC / SumA;
@@ -1537,7 +1537,7 @@ namespace Kratos
 			{
 				auxf += StrainVector[cont] * StressVector[cont];  // E*S
 			}
-			f = sqrt(auxf);
+			f = std::sqrt(auxf);
 			f *= (ere0*n + ere1);
 		}
 
@@ -1547,7 +1547,7 @@ namespace Kratos
 		F = f - c_threshold;
 
 		double ElementArea = this->GetGeometry().Area();
-		double A = 1.00 / (Gt*n*n*E / (l_char *pow(sigma_c, 2)) - 0.5);
+		double A = 1.00 / (Gt*n*n*E / (l_char *std::pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
 		if (F <= 0)  // Elastic region --> Damage is constant 
@@ -1580,11 +1580,11 @@ namespace Kratos
 		friction_angle = this->GetProperties()[INTERNAL_FRICTION_ANGLE] * 3.14159 / 180; // In radians!
 		E = this->GetProperties()[YOUNG_MODULUS];
 		Gt = this->GetProperties()[FRAC_ENERGY_T];
-		c_max = abs(sigma_t);
+		c_max = std::abs(sigma_t);
 
 		double ElementArea = this->GetGeometry().Area();
 		//double l_char = sqrt(4 * ElementArea / sqrt(3));
-		double A = 1.00 / (Gt*E / (l_char *pow(sigma_c, 2)) - 0.5);
+		double A = 1.00 / (Gt*E / (l_char *std::pow(sigma_c, 2)) - 0.5);
 		if (A < 0) { KRATOS_THROW_ERROR(std::invalid_argument, " 'A' damage parameter lower than zero --> Increase FRAC_ENERGY_T", A) }
 
 		double f, F; /// F = f-c = 0 classical definition of yield surface
