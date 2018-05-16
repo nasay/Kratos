@@ -1533,7 +1533,7 @@ namespace Kratos
 		else
 		{
 			double auxf = 0.0;
-			for (int cont = 0;cont < 2;cont++)
+			for (int cont = 0; cont < 3; cont++)
 			{
 				auxf += StrainVector[cont] * StressVector[cont];  // E*S
 			}

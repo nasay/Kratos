@@ -1314,9 +1314,6 @@ namespace Kratos
 		double l_char
 	)
 	{
-		Vector PrincipalStressVector = ZeroVector(3);
-		this->CalculatePrincipalStresses(PrincipalStressVector, StressVector);
-
 		double sigma_c = 0.0, sigma_t = 0.0, friction_angle = 0.0, E = 0.0, Gt = 0.0;
 		sigma_c = this->GetProperties()[YIELD_STRESS_C];
 		sigma_t = this->GetProperties()[YIELD_STRESS_T];
@@ -1412,7 +1409,7 @@ namespace Kratos
 		else
 		{
 			double auxf = 0.0;
-			for (int cont = 0; cont < 5; cont++)
+			for (int cont = 0; cont < 6; cont++)
 			{
 				auxf += StrainVector[cont] * StressVector[cont];  // E*S
 			}
