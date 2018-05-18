@@ -87,7 +87,7 @@ class FEMDEM_Solution:
 		self.FEM_Solution.InitializeSolutionStep()  # modificado orden con initialize del mmg
 
 		# just for testing ->Remove
-		self.FEM_Solution.GraphicalOutputPrintOutput()
+		#self.FEM_Solution.GraphicalOutputPrintOutput()
 		# ***********************
 
 #============================================================================================================================

@@ -49,6 +49,7 @@ proc WriteProjectParameters { basename dir problemtypedir TableDict} {
     puts $FileVar "                 \"input_filename\":     \"$basename\","
     puts $FileVar "                 \"input_file_label\":    0"
     puts $FileVar "            \},"
+	puts $FileVar "            \"reform_dofs_at_each_step\":              true,"
     puts $FileVar "            \"line_search\":                          [GiD_AccessValue get gendata Line_search],"
     puts $FileVar "            \"convergence_criterion\":               \"[GiD_AccessValue get gendata Convergence_Criterion]\","
     puts $FileVar "            \"displacement_relative_tolerance\":      [GiD_AccessValue get gendata Displacement_Relative_Tolerance],"

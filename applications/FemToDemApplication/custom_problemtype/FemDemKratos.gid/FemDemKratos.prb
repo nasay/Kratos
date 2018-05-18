@@ -137,7 +137,7 @@ VALUE: false
 
 TITLE:DEM_Materials_Properties
 QUESTION: Coupled_Calculation#CB#(true,false)
-VALUE: false
+VALUE: true
 QUESTION: Density
 VALUE: 2500.00
 QUESTION: Young_Modulus
