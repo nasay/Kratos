@@ -1,4 +1,4 @@
-from __future__ import print_function, absolute_import, division #makes KratosMultiphysics backward compatible with python 2.6 and 2.7
+from __future__ import print_function, absolute_import, division # makes KratosMultiphysics backward compatible with python 2.6 and 2.7
 
 import MainDEM_for_coupling as DEM
 import MainFEM_for_coupling as FEM
@@ -28,7 +28,7 @@ class FEMDEM_Solution:
 		# Initialize Remeshing files
 		self.DoRemeshing = True # hard coded
 		if self.DoRemeshing:
-			mmg_parameter_file = open("MMRParameters.json",'r')
+			mmg_parameter_file = open("MMGParameters.json",'r')
 			self.mmg_parameters = KratosMultiphysics.Parameters(mmg_parameter_file.read())
 			Model = {self.mmg_parameters["model_part_name"].GetString(): self.FEM_Solution.main_model_part}
 			self.RemeshingProcessMMG = MMG.MmgProcess(Model, self.mmg_parameters)
@@ -46,6 +46,7 @@ class FEMDEM_Solution:
 
 #============================================================================================================================
 	def Initialize(self):
+		
 		self.FEM_Solution.Initialize()
 		self.DEM_Solution.Initialize()
 
@@ -84,7 +85,7 @@ class FEMDEM_Solution:
 		if self.DoRemeshing:
 			self.RemeshingProcessMMG.ExecuteInitializeSolutionStep()
 
-		self.FEM_Solution.InitializeSolutionStep()  # modificado orden con initialize del mmg
+		self.FEM_Solution.InitializeSolutionStep()
 
 		# just for testing ->Remove
 		#self.FEM_Solution.GraphicalOutputPrintOutput()

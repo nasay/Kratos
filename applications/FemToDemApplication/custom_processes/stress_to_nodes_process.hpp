@@ -22,8 +22,6 @@
 namespace Kratos
 {
 
-    // ONLY FOR TRIANGLES IN 2D
-
     class StressToNodesProcess : public Process
     {
 
@@ -157,7 +155,7 @@ namespace Kratos
             for (ModelPart::NodeIterator it = mr_model_part.NodesBegin(); it != mr_model_part.NodesEnd(); ++it)
             {
                 double& norm = it->GetSolutionStepValue(EQUIVALENT_NODAL_STRESS);
-                norm /= (MaxEqStress*1e4);
+                norm /= (MaxEqStress*1.0e4);
             }
 
 

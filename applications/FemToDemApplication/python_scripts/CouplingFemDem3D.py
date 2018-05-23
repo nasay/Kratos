@@ -151,7 +151,7 @@ class FEMDEM3D_Solution(CouplingFemDem.FEMDEM_Solution):
 				dist13  = self.CalculateDistanceBetweenNodes(Element.GetNodes()[1], Element.GetNodes()[3])
 				dist23  = self.CalculateDistanceBetweenNodes(Element.GetNodes()[2], Element.GetNodes()[3])
 
-				print("Elemento: ",Element.Id ," tiene ", NumberOfDEM, " DEMs")
+				#print("Elemento: ",Element.Id ," tiene ", NumberOfDEM, " DEMs")
 				#Wait()
 
 				# --------------------- 1ST SCENARIO -----------------------------
@@ -765,7 +765,7 @@ class FEMDEM3D_Solution(CouplingFemDem.FEMDEM_Solution):
 			if NumberOfActiveElements == 0 and node.GetValue(KratosFemDem.INACTIVE_NODE) == False:
 
 				Id = node.Id
-				print("nodo inactivo: ", Id)
+				#print("nodo inactivo: ", Id)
 				DEMnode = self.SpheresModelPart.GetNode(Id)
 				node.SetValue(KratosFemDem.INACTIVE_NODE, True)
 				DEMnode.SetValue(KratosFemDem.INACTIVE_NODE, True)
