@@ -173,6 +173,7 @@ namespace Kratos
 
         KRATOS_TEST_CASE_IN_SUITE(GeneralResudialConvergenceCriteriaTest1, KratosStructuralMechanicsFastSuite)
         {
+        KRATOS_INFO("CONVERGENCE_CRITERIA") << "Some regular print" << std::endl;
             DofsArrayType dofs_array;
             const std::size_t num_divisions = 10;
 
