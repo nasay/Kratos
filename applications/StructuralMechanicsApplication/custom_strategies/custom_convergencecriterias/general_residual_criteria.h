@@ -282,26 +282,27 @@ public:
                     ++mNumDofs[vec_index];
                 }
             }
+        
 
 
             // Computing the residuals
 
             const SizeType num_var_to_separate = mRatioResiduals.size();
             // TODO concatenate the vectors to have only one call to MPI
-            std::vector<TDataType> residuals = std::move(mRatioResiduals);
+            std::vector<TDataType> residuals = mRatioResiduals;
             residuals.reserve(2 * num_var_to_separate);
-            std::move(mAbsResiduals.begin(), mAbsResiduals.end(), std::back_inserter(residuals));
+            std::copy(mAbsResiduals.begin(), mAbsResiduals.end(), residuals.begin() + num_var_to_separate);
 
             // Synchroizing them across ranks
             rModelPart.GetCommunicator().SumAll(residuals); // This also needs to be implemented for std::vector
 
             // Then afterwards split them again
-            std::move(residuals.begin() + num_var_to_separate, residuals.end(), std::back_inserter(mAbsResiduals));
-            mRatioResiduals = std::move(residuals);
+            std::copy(residuals.begin(), residuals.begin() + num_var_to_separate, mRatioResiduals.begin());
+            std::copy(residuals.begin() + num_var_to_separate, residuals.end(), mAbsResiduals.begin());
 
             auto sqrtFunction = [](const TDataType & el) -> TDataType { return std::sqrt(el); };
             std::transform(mRatioResiduals.begin(), mRatioResiduals.end(), mRatioResiduals.begin(), sqrtFunction);
-            std::transform(mAbsResiduals.begin(), mRatioResiduals.end(), mRatioResiduals.begin(), sqrtFunction);
+            std::transform(mAbsResiduals.begin(), mAbsResiduals.end(), mAbsResiduals.begin(), sqrtFunction);
 
             // TODO implement isZero()
             if (mRatioResiduals[0] == 0.0) {
@@ -367,6 +368,7 @@ public:
         {
             return true;
         }
+    }
         /*if (TSparseSpace::Size(b) != 0) //if we are solving for something
         {
 
@@ -426,7 +428,8 @@ public:
         else
         {
             return true;
-        }*/
+        }
+        return true;
     }
 
     void Initialize(
