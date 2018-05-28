@@ -4,7 +4,7 @@ import MainFemDem
 import KratosMultiphysics
 import KratosMultiphysics.FemToDemApplication   as KratosFemDem
 import cleaning_utility
-import adaptive_mesh_refinement_utility
+#import adaptive_mesh_refinement_utility
 import gid_output_utility
 
 # Python script created to modify the existing one due to the coupling of the DEM app in 2D
@@ -12,7 +12,7 @@ import gid_output_utility
 class FEM_for_coupling_Solution(MainFemDem.FEM_Solution):
 
 	def Info(self):
-		print("FEM part of the FEMDEM application")
+		print("FEM part of the FEMDEM application") 
 
 
 	def Initialize(self):

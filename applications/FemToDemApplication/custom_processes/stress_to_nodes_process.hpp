@@ -5,7 +5,7 @@
 //   Revision:            $Revision:            0.0 $
 //
 
-#if !defined(KRATOS_STRESS_TO_NODES_PROCESS )
+#if !defined(KRATOS_STRESS_TO_NODES_PROCESS)
 #define  KRATOS_STRESS_TO_NODES_PROCESS
 
 #include <fstream>
@@ -47,7 +47,10 @@ namespace Kratos
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public:
-        
+
+        /// Pointer definition of ApplyMultipointConstraintsProcess
+        KRATOS_CLASS_POINTER_DEFINITION(StressToNodesProcess);
+
         typedef ModelPart::ElementsContainerType ElementsArrayType;
 
         // Constructor

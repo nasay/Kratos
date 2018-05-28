@@ -167,7 +167,7 @@ class FemDemMechanicalSolver(object):
 
         for variable in self.nodal_variables:            
             self.main_model_part.AddNodalSolutionStepVariable(KratosMultiphysics.KratosGlobals.GetVariable(variable))
-            #print(" Added variable ", KratosMultiphysics.KratosGlobals.GetVariable(variable),"(",variable,")")
+            print(" Added variable ", KratosMultiphysics.KratosGlobals.GetVariable(variable),"(",variable,")")
             
         print("::[Mechanical_Solver]:: General Variables ADDED")
                                                               
@@ -452,10 +452,10 @@ class FemDemMechanicalSolver(object):
         conv_params.AddValue("residual_absolute_tolerance",self.settings["residual_absolute_tolerance"])
         
         # Construction of the class convergence_criterion
-        import convergence_criteria_factory
-        convergence_criterion = convergence_criteria_factory.convergence_criterion(conv_params)
+        import convergence_criteria_factory_fem_dem
+        convergence_criteria_factory_fem_dem = convergence_criteria_factory_fem_dem.convergence_criterion(conv_params)
         
-        return convergence_criterion.mechanical_convergence_criterion
+        return convergence_criteria_factory_fem_dem.mechanical_convergence_criterion
 
     def _create_linear_solver(self):
         import linear_solver_factory

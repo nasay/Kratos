@@ -52,7 +52,7 @@ public:
 	/// Destructor.
 	virtual ~KratosFemToDemApplication(){}
 
-	virtual void Register();
+	virtual void Register(); 
 
 
 

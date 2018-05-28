@@ -12,7 +12,7 @@ import KratosMultiphysics.ExternalSolversApplication as KratosSolvers
 import KratosMultiphysics.FemToDemApplication   as KratosFemDem
 import MainSolidFEM
 #import main_script as MainDEM
-import adaptive_mesh_refinement_utility
+#import adaptive_mesh_refinement_utility
 import gid_output_utility
 import cleaning_utility
 
@@ -261,6 +261,7 @@ class FEM_Solution(MainSolidFEM.Solution):
 #============================================================================================================================
 	def InitializeSolutionStep(self):
 
+		# Search neighbours at each step in case of remeshing
 		neighbour_elemental_finder =  KratosMultiphysics.FindElementalNeighboursProcess(self.main_model_part, 2, 5)
 		neighbour_elemental_finder.Execute()
 
@@ -284,11 +285,11 @@ class FEM_Solution(MainSolidFEM.Solution):
 #============================================================================================================================
 	def SolveSolutionStep(self):
 
-		self.clock_time = self.StartTimeMeasuring();
+		self.clock_time = self.StartTimeMeasuring()
 
 		self.solver.Solve()
 
-		self.StopTimeMeasuring(self.clock_time,"Solving", False);
+		self.StopTimeMeasuring(self.clock_time,"Solving", False)
 
 #============================================================================================================================
 	def FinalizeSolutionStep(self):
